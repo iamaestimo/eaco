@@ -13,6 +13,10 @@ project adheres to [Semantic Versioning](https://semver.org/)
   6.1 with "Unsupported Active Record version".
 
 ### Changed
+* Upgraded Cucumber from 3.2.0 to 11.x. Dropped the unmaintained
+  `yard-cucumber` plugin (pinned `cucumber < 4`) and its `--plugin cucumber`
+  entry in `.yardopts`. No step-definition changes were required. CI sets
+  `CUCUMBER_PUBLISH_QUIET` to silence the report-publishing banner.
 * **Modernization (Phase 1):** dropped support for Rails < 7.2 and Ruby < 3.2.
 * Supported matrix is now Ruby 3.2–4.0 against Rails 7.2, 8.0 and 8.1.
   Full suite (RSpec + Cucumber) is green on Ruby 4.0 against all three.

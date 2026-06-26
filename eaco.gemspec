@@ -35,11 +35,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "appraisal"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "guard-rspec"
-  spec.add_development_dependency "cucumber"
-  # No longer a default gem as of Ruby 3.5/4.0; required by cucumber 3.x.
+  spec.add_development_dependency "cucumber", "~> 11.0"
+  # No longer a default gem as of Ruby 3.5/4.0; required by Cucumber.
   spec.add_development_dependency "ostruct"
   spec.add_development_dependency "guard-cucumber"
-  spec.add_development_dependency "yard-cucumber"
   spec.add_development_dependency "coveralls"
   spec.add_development_dependency "guard-shell"
   spec.add_development_dependency "multi_json"

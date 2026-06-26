@@ -43,6 +43,7 @@ jobs:
     env:
       BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
       EACO_AR_CONFIG: ./features/active_record.github.yml
+      CUCUMBER_PUBLISH_QUIET: "true"
 
     steps:
       - uses: actions/checkout@v6

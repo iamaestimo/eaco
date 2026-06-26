@@ -87,7 +87,7 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
 - [x] Test on Ruby 3.2, 3.3, 3.4, 4.0 (CI matrix) — *local validation done on 4.0 only; CI covers the rest*
 
 ### 1.3 Dependency updates
-- [ ] Bump `bundler` dev dep (was `~> 1.6`) and modernize rspec/cucumber/yard
+- [x] Modernized Cucumber (3.2 → 11.x); rspec/yard current. Bundler dep still to review.
 - [ ] Add `spec.required_ruby_version = '>= 3.2'` to gemspec — *DONE in this pass*
 - [ ] Remove deprecated gems (coveralls → simplecov+coverage service? TBD)
 - [x] Migrate Appraisals → checked-in `gemfiles/` matrix *(Appraisals trimmed; see open decision on full removal)*
@@ -174,11 +174,11 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
 
 ## Open decisions / questions
 
-- [ ] **Upgrade Cucumber 3.2.0 → 9.x?** 3.2.0 (2018) works on Ruby 4.0 only after
-  removing the profile file, and emits deprecation warnings (`calling private
-  without arguments`, legacy formatter API). A modern Cucumber is the real fix
-  but changes the step-definition/World API — a dedicated follow-up task.
-  *(Removed `.config/cucumber.yml` as the interim unblock.)*
+- [x] ~~**Upgrade Cucumber 3.2.0 → 9.x?**~~ **DONE (2026-06-26):** upgraded to
+  Cucumber 11.1.1. No step-definition/World changes were needed (the gem only
+  uses `World do` + `Before do`). Dropped the unmaintained `yard-cucumber`
+  plugin, which was the hard blocker (`cucumber < 4`). Banner silenced via
+  `CUCUMBER_PUBLISH_QUIET` in CI. Green on Rails 7.2/8.0/8.1, Ruby 4.0.
 - [ ] **Full Appraisal removal?** Currently trimmed Appraisals + checked-in gemfiles
   (both kept in sync). Decide whether to drop the `appraisal` dev dep entirely and
   hand-maintain gemfiles, or keep Appraisal as the generator.
