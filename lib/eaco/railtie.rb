@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Eaco
 
   autoload :Controller, 'eaco/controller'
@@ -21,12 +23,8 @@ module Eaco
       # :nocov:
       Eaco.parse_default_rules_file!
 
-      unless Rails.configuration.cache_classes
-        if defined? ActiveSupport::Reloader
-          ActiveSupport::Reloader.to_prepare { Eaco.parse_default_rules_file! }
-        else
-          ActionDispatch::Reloader.to_prepare { Eaco.parse_default_rules_file! }
-        end
+      if Rails.configuration.enable_reloading
+        ActiveSupport::Reloader.to_prepare { Eaco.parse_default_rules_file! }
       end
       # :nocov:
     end

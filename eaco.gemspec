@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   # No longer a default gem as of Ruby 3.5/4.0; required by Cucumber.
   spec.add_development_dependency "ostruct"
   spec.add_development_dependency "guard-cucumber"
-  spec.add_development_dependency "coveralls"
+  spec.add_development_dependency "simplecov"
   spec.add_development_dependency "guard-shell"
   spec.add_development_dependency "multi_json"
   spec.add_development_dependency "rails"

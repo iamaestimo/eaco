@@ -73,29 +73,31 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   7.2.3 / 8.0.5 / 8.1.3 under Ruby 4.0. *Was hard-failing "Unsupported Active
   Record version: 81".*
 - [ ] Verify modern PG jsonb handling is optimal (works; revisit for GIN-index/perf in Phase 2)
-- [ ] Zeitwerk autoloader: validate inside a real Rails app boot (gem's own suite passes; railtie path not exercised by Cucumber)
-- [ ] Drop old `cache_classes` reliance in railtie → `enable_reloading`/`eager_load` (still works via alias; deprecation cleanup)
+- [ ] Zeitwerk autoloader: validate inside a real Rails app boot (gem's own suite passes; railtie path not exercised by Cucumber) — *only remaining 1.1 item; needs a throwaway Rails app*
+- [x] Railtie uses `config.enable_reloading` (was deprecated `config.cache_classes`); dropped pre-7.x reloader fallback
 - [x] Remove deprecated Rails 3.x/4.x — *gemfiles + Appraisals trimmed; floor now Rails 7.2*
 
 ### 1.2 Ruby 3.x AND 4.0 compatibility  *(reworded — was "Ruby 3.x")*
 - [x] **Suite green on Ruby 4.0.5** (local: RSpec 21/0, Cucumber 33/33 on Rails 7.2/8.0/8.1)
 - [x] Ruby 3.4+ `Hash#inspect` spacing — specs now derive expectation from Ruby's own output
 - [x] Ruby 4.0 Prism `SyntaxError` wording — relaxed feature expectation
-- [ ] Audit keyword-argument usage (Ruby 3.0+ separation) — no failures surfaced, but not exhaustively audited
-- [ ] Add `# frozen_string_literal: true` across `lib/` *(deferred: mechanical, needs string-mutation check; ~10 files missing it)*
-- [ ] Pattern matching where it improves the DSL (optional)
+- [x] Audit keyword-argument usage — no in-place issues; suite green on Ruby 4.0 is the signal
+- [x] Added `# frozen_string_literal: true` across all of `lib/` (56 files); no string-mutation breakage, suite green
+- [ ] Pattern matching where it improves the DSL (optional — not pursued)
 - [x] Test on Ruby 3.2, 3.3, 3.4, 4.0 (CI matrix) — *local validation done on 4.0 only; CI covers the rest*
 
 ### 1.3 Dependency updates
-- [x] Modernized Cucumber (3.2 → 11.x); rspec/yard current. Bundler dep still to review.
-- [ ] Add `spec.required_ruby_version = '>= 3.2'` to gemspec — *DONE in this pass*
-- [ ] Remove deprecated gems (coveralls → simplecov+coverage service? TBD)
+- [x] Modernized Cucumber (3.2 → 11.x); rspec/yard current
+- [x] Add `spec.required_ruby_version = '>= 3.2'` to gemspec
+- [x] Removed `coveralls` (unmaintained) → plain `SimpleCov`; dropped dead Travis upload path
 - [x] Migrate Appraisals → checked-in `gemfiles/` matrix *(Appraisals trimmed; see open decision on full removal)*
 
 ### 1.4 CI/CD modernization
 - [x] Travis → GitHub Actions *(done earlier)*
 - [x] New Ruby/Rails matrix (3.2–4.0 × 7.2–8.1) + fix `master`→`main` triggers
-- [ ] Automated gem releases (release workflow / trusted publishing)
+- [x] Automated gem releases — `.github/workflows/release.yml` via RubyGems Trusted
+  Publishing (OIDC). **One-time maintainer setup:** register repo+workflow as a
+  trusted publisher on rubygems.org before the first tagged release.
 
 ---
 
@@ -185,9 +187,10 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
 - [ ] **Repo home:** issues live on `iamaestimo/eaco`, but gemspec/README still point
   at upstream `ifad/eaco`. Decide if this fork is the maintained home (affects
   gemspec `homepage`, badges, README links).
-- [ ] **`coveralls`** is unmaintained-ish; replace with `simplecov` + a current
-  coverage service?
-- [ ] When to actually bump `VERSION` to `2.0.0.beta1` and cut a release.
+- [x] ~~`coveralls` replacement~~ **DONE:** now plain `SimpleCov`. Optional future:
+  wire CI to upload LCOV to a coverage service (qlty/codecov) — no gem needed.
+- [ ] When to actually tag `v2.0.0.beta1` (release workflow is in place; needs the
+  rubygems.org trusted-publisher registration first).
 
 ## GitHub issue sync notes (apply later when we sync)
 
@@ -208,3 +211,8 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   adapter rejected AR > 6.1), added `ostruct` dev dep, fixed Ruby 3.4 `Hash#inspect`
   and Ruby 4.0 Prism `SyntaxError` test expectations, removed `.config/cucumber.yml`
   (Cucumber 3.x ERB-profile crash on Ruby 3.4+). Result: RSpec 21/0, Cucumber 33/33.
+- **2026-06-26 (housekeeping):** Upgraded Cucumber 3.2 → 11.x (dropped `yard-cucumber`).
+  Replaced `coveralls` with plain SimpleCov + removed dead Travis path; railtie
+  `cache_classes` → `enable_reloading`; `frozen_string_literal` across all 56 `lib/`
+  files; added `release.yml` (RubyGems Trusted Publishing). Suite re-validated green
+  on all three gemfiles. **Phase 1 complete bar the real-Rails-app Zeitwerk check.**

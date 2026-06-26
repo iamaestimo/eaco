@@ -13,6 +13,13 @@ project adheres to [Semantic Versioning](https://semver.org/)
   6.1 with "Unsupported Active Record version".
 
 ### Changed
+* Replaced `coveralls` (unmaintained) with plain `SimpleCov` for coverage.
+  Removed the dead Travis-only coverage-upload path from the default Rake task.
+* Modernized the Railtie: use `config.enable_reloading` instead of the
+  deprecated `config.cache_classes`, and drop the pre-7.x reloader fallback.
+* Added `# frozen_string_literal: true` to all of `lib/`.
+* Added a `Release` GitHub Actions workflow that publishes the gem on version
+  tags via RubyGems Trusted Publishing (OIDC, no stored API key).
 * Upgraded Cucumber from 3.2.0 to 11.x. Dropped the unmaintained
   `yard-cucumber` plugin (pinned `cucumber < 4`) and its `--plugin cucumber`
   entry in `.yardopts`. No step-definition changes were required. CI sets

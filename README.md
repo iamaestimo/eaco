@@ -1,7 +1,6 @@
 # Eaco
 
 [![CI](https://github.com/ifad/eaco/actions/workflows/ci.yml/badge.svg)](https://github.com/ifad/eaco/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/ifad/eaco/badge.svg)](https://coveralls.io/github/ifad/eaco)
 [![Maintainability](https://qlty.sh/gh/ifad/projects/eaco/maintainability.svg)](https://qlty.sh/gh/ifad/projects/eaco)
 [![Inline docs](https://inch-ci.org/github/ifad/eaco.svg?branch=master)](https://inch-ci.org/github/ifad/eaco)
 [![Gem Version](https://badge.fury.io/rb/eaco.svg)](https://badge.fury.io/rb/eaco)
