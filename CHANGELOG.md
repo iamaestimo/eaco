@@ -5,7 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](https://semver.org/)
 
-## Unreleased
+## Unreleased (2.0.0.beta1)
+
+### Added
+* Active Record compatibility modules for Rails 7.0, 7.1, 7.2, 8.0 and 8.1
+  (`V70`–`V81`). The adapter previously rejected any Active Record newer than
+  6.1 with "Unsupported Active Record version".
+
+### Changed
+* **Modernization (Phase 1):** dropped support for Rails < 7.2 and Ruby < 3.2.
+* Supported matrix is now Ruby 3.2–4.0 against Rails 7.2, 8.0 and 8.1.
+  Full suite (RSpec + Cucumber) is green on Ruby 4.0 against all three.
+* Trimmed `Appraisals` and `gemfiles/` to the supported Rails versions; added
+  `gemfiles/rails_8.0.gemfile` and `gemfiles/rails_8.1.gemfile`.
+* CI now tests Ruby 3.2/3.3/3.4/4.0 and triggers on the `main` branch.
+* Set `required_ruby_version >= 3.2` and added gem metadata.
+* Added `ostruct` as a development dependency (no longer a default gem on
+  Ruby 3.5/4.0; required by Cucumber).
+
+### Fixed
+* Ruby 3.4+ compatibility in specs: `Eaco::ACL#inspect` / `#pretty_inspect`
+  expectations now track Ruby's own `Hash` formatting (spaces around `=>`).
+* Ruby 4.0 (Prism parser) compatibility: relaxed the `SyntaxError` message
+  expectation in the authorization-parse-error feature.
+* Removed `.config/cucumber.yml`: Cucumber 3.x cannot parse profiles via the
+  removed `ERB.new` positional API on Ruby 3.4+.
 
 ### Fixed
 * Fix YARD documentation warnings:
