@@ -7,6 +7,12 @@ project adheres to [Semantic Versioning](https://semver.org/)
 
 ## Unreleased (2.0.0.beta1)
 
+### Changed
+* **Gem renamed to `eaco-abac`** — a maintained continuation of `eaco`
+  (last released 1.1.1, 2017, by ifad). The require path, `Eaco` namespace
+  and DSL are unchanged: use `gem "eaco-abac", require: "eaco"`. Project
+  home is now https://github.com/iamaestimo/eaco.
+
 ### Added
 * Active Record compatibility modules for Rails 7.0, 7.1, 7.2, 8.0 and 8.1
   (`V70`–`V81`). The adapter previously rejected any Active Record newer than

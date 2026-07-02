@@ -187,9 +187,13 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
 - [ ] **Full Appraisal removal?** Currently trimmed Appraisals + checked-in gemfiles
   (both kept in sync). Decide whether to drop the `appraisal` dev dep entirely and
   hand-maintain gemfiles, or keep Appraisal as the generator.
-- [ ] **Repo home:** issues live on `iamaestimo/eaco`, but gemspec/README still point
-  at upstream `ifad/eaco`. Decide if this fork is the maintained home (affects
-  gemspec `homepage`, badges, README links).
+- [x] ~~**Repo home:**~~ **DECIDED (2026-07-02):** `iamaestimo/eaco` is the
+  maintained home. Gem republished as **`eaco-abac`** (the `eaco` name on
+  rubygems.org is owned by ifad; name checked available). Require path stays
+  `require "eaco"` (`gem "eaco-abac", require: "eaco"`). Gemspec renamed to
+  `eaco-abac.gemspec`, homepage/badges/README all point at the fork; README
+  carries a lineage note crediting ifad's original. First publish will claim
+  the name via a *pending trusted publisher* on rubygems.org (no API key).
 - [x] ~~`coveralls` replacement~~ **DONE:** now plain `SimpleCov`. Optional future:
   wire CI to upload LCOV to a coverage service (qlty/codecov) — no gem needed.
 - [ ] When to actually tag `v2.0.0.beta1` (release workflow is in place; needs the
