@@ -4,13 +4,13 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'eaco/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "eaco"
+  spec.name          = "eaco-abac"
   spec.version       = Eaco::VERSION
-  spec.authors       = ["Marcello Barnaba"]
-  spec.email         = ["vjt@openssl.it"]
+  spec.authors       = ["Aestimo K.", "Marcello Barnaba"]
+  spec.email         = ["zeros.only@proton.me"]
   spec.summary       = %q{Attribute-Based Access Control (ABAC) authorization framework for Ruby}
-  spec.description   = %q{Eaco is an ABAC authorization framework: authorization decisions live in the database as per-record ACLs (designator => role), with efficient extraction of the collection of resources accessible by an actor.}
-  spec.homepage      = "https://github.com/ifad/eaco"
+  spec.description   = %q{Eaco is an ABAC authorization framework: authorization decisions live in the database as per-record ACLs (designator => role), with efficient extraction of the collection of resources accessible by an actor. Maintained continuation of the eaco gem, modernized for Rails 7.2-8.1 and Ruby 3.2-4.0.}
+  spec.homepage      = "https://github.com/iamaestimo/eaco"
   spec.license       = "MIT"
 
   spec.required_ruby_version = ">= 3.2"
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata = {
     "homepage_uri"      => spec.homepage,
     "source_code_uri"   => spec.homepage,
-    "changelog_uri"     => "#{spec.homepage}/blob/master/CHANGELOG.md",
+    "changelog_uri"     => "#{spec.homepage}/blob/main/CHANGELOG.md",
     "rubygems_mfa_required" => "true"
   }
 

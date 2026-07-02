@@ -1,12 +1,18 @@
 # Eaco
 
-[![CI](https://github.com/ifad/eaco/actions/workflows/ci.yml/badge.svg)](https://github.com/ifad/eaco/actions/workflows/ci.yml)
-[![Maintainability](https://qlty.sh/gh/ifad/projects/eaco/maintainability.svg)](https://qlty.sh/gh/ifad/projects/eaco)
-[![Inline docs](https://inch-ci.org/github/ifad/eaco.svg?branch=master)](https://inch-ci.org/github/ifad/eaco)
-[![Gem Version](https://badge.fury.io/rb/eaco.svg)](https://badge.fury.io/rb/eaco)
+[![CI](https://github.com/iamaestimo/eaco/actions/workflows/ci.yml/badge.svg)](https://github.com/iamaestimo/eaco/actions/workflows/ci.yml)
+[![Gem Version](https://badge.fury.io/rb/eaco-abac.svg)](https://rubygems.org/gems/eaco-abac)
 
 Eacus, the holder of the keys of Hades, is an Attribute-Based Access Control ([ABAC](https://en.wikipedia.org/wiki/Attribute-based_access_control)) authorization
 framework for Ruby.
+
+Supports **Ruby 3.2–4.0** and **Rails 7.2–8.1**.
+
+> **Note:** the gem is published as [`eaco-abac`](https://rubygems.org/gems/eaco-abac) —
+> a maintained continuation of the original [`eaco`](https://github.com/ifad/eaco)
+> by [ifad](https://github.com/ifad), whose last release (1.1.1, 2017) supported
+> Rails up to 5. Same library, same `require "eaco"`, same DSL — modernized and
+> actively developed here.
 
 ![Eaco e Telamone][eaco-e-telamone]
 
@@ -89,22 +95,38 @@ database. Adapters are provided for PG's +jsonb+ and for CouchDB-Lucene.
 
 Add this line to your application's Gemfile:
 
-    gem 'eaco'
+```ruby
+gem "eaco-abac", require: "eaco"
+```
 
 And then execute:
 
-    $ bundle
+    $ bundle install
+
+Each authorized model needs a `jsonb` column named `acl` (PostgreSQL):
+
+```ruby
+class AddAclToDocuments < ActiveRecord::Migration[8.1]
+  def change
+    add_column :documents, :acl, :jsonb
+  end
+end
+```
 
 ## Usage
 
-Create `config/authorization.rb` [(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/DSL)
+Create `config/authorization.rb` [(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/DSL).
+It is parsed when your app boots and re-parsed on each code reload in
+development. Reference your models with top-level constants (`::Document`) —
+the file is evaluated inside Eaco's DSL context, so a bare `Document` would
+be looked up under the `Eaco::` namespace.
 
 ```ruby
 # Defines `Document` to be an authorized resource.
 #
 # Adds Document.accessible_by and Document#allows?
 #
-authorize Document, using: :pg_jsonb do
+authorize ::Document, using: :pg_jsonb do
   roles :owner, :editor, :reader
 
   permissions do
@@ -119,7 +141,7 @@ end
 #
 # Adds User#designators
 #
-actor User do
+actor ::User do
   admin do |user|
     user.admin?
   end
@@ -132,8 +154,8 @@ actor User do
 end
 ```
 
-Given a Resource [(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/Resource)
-with an ACL [(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/ACL):
+Given a Resource [(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/Resource)
+with an ACL [(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/ACL):
 
 ```ruby
 # An example ACL
@@ -144,7 +166,7 @@ with an ACL [(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/ACL):
 => #<Document::ACL {"user:10" => :owner, "group:reviewers" => :reader}>
 ```
 
-and an Actor [(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/Actor):
+and an Actor [(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/Actor):
 
 ```ruby
 # An example Actor
@@ -217,7 +239,7 @@ Grant reader access to a group:
 ```
 
 Obtain a collection of Resources accessible by a given Actor
-[(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/Adapters):
+[(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/Adapters):
 
 ```ruby
 >> Document.accessible_by(user)
@@ -225,11 +247,11 @@ Obtain a collection of Resources accessible by a given Actor
 
 Check whether a controller action can be accessed by an user. Your
 Controller must respond to `current_user` for this to work.
-[(rdoc)](https://www.rubydoc.info/github/ifad/eaco/master/Eaco/Controller)
+[(rdoc)](https://www.rubydoc.info/github/iamaestimo/eaco/main/Eaco/Controller)
 
 ```ruby
 class DocumentsController < ApplicationController
-  before_filter :find_document
+  before_action :find_document
 
   authorize :show, [:document, :read]
   authorize :edit, [:document, :edit]
@@ -243,13 +265,13 @@ end
 
 ## Running specs
 
-You need a running postgresql 9.4 instance.
+You need a running PostgreSQL instance.
 
 Create an user and a database:
 
     $ sudo -u postgres psql
 
-    postgres=# CREATE ROLE eaco LOGIN;
+    postgres=# CREATE ROLE eaco LOGIN PASSWORD 'yourpassword';
     CREATE ROLE
 
     postgres=# CREATE DATABASE eaco OWNER eaco ENCODING 'utf8';
@@ -268,11 +290,11 @@ Run `rake`. This will run the specs and cucumber features and report coverage.
 
 Specs are run against the supported rails versions in turn. If you want to
 focus on a single release, use `appraisal rails-X.Y rake`, where `X.Y` can be
-`3.2`, `4.0`, `4.1`, `4.2`, `5.0`, `5.1`, `5.2`, `6.0`, and `6.1`.
+`7.2`, `8.0`, and `8.1`.
 
 ## Contributing
 
-1. Fork it ( https://github.com/ifad/eaco/fork )
+1. Fork it ( https://github.com/iamaestimo/eaco/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
