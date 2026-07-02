@@ -225,3 +225,6 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   `table_exists?` check must rescue `NoDatabaseError` so `rails db:create` works.
   Smoke test 11/11 green (lazy + eager-load boot); gem suite re-validated green on
   all three gemfiles. **Phase 1 code work fully complete.**
+- **2026-07-02 (PR):** Opened PR #5 (`main` ← `phase-1-modernization`,
+  https://github.com/iamaestimo/eaco/pull/5). GitHub Actions CI green on all
+  6 matrix cells (Ruby 3.2–4.0 × Rails 7.2/8.0/8.1, PG 16).
