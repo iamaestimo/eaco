@@ -1,7 +1,6 @@
 # Eaco
 
 [![CI](https://github.com/ifad/eaco/actions/workflows/ci.yml/badge.svg)](https://github.com/ifad/eaco/actions/workflows/ci.yml)
-[![Coverage Status](https://coveralls.io/repos/ifad/eaco/badge.svg)](https://coveralls.io/github/ifad/eaco)
 [![Maintainability](https://qlty.sh/gh/ifad/projects/eaco/maintainability.svg)](https://qlty.sh/gh/ifad/projects/eaco)
 [![Inline docs](https://inch-ci.org/github/ifad/eaco.svg?branch=master)](https://inch-ci.org/github/ifad/eaco)
 [![Gem Version](https://badge.fury.io/rb/eaco.svg)](https://badge.fury.io/rb/eaco)
@@ -12,6 +11,48 @@ framework for Ruby.
 ![Eaco e Telamone][eaco-e-telamone]
 
 *"Aeacus telemon by user Ravenous at en.wikipedia.org - Public domain through Wikimedia Commons - https://commons.wikimedia.org/wiki/File:Aeacus_telemon.jpg"*
+
+## Authentication vs. Authorization
+
+Eaco is an **authorization** library — it decides *what a user is allowed to do*.
+It does **not** handle **authentication** (*who the user is*: logins, passwords,
+sessions, 2FA). Eaco is designed to sit **on top of** your authentication layer,
+whatever it is:
+
+- Rails 8's built-in authentication generator
+- [Devise](https://github.com/heartcombo/devise), [Sorcery](https://github.com/Sorcery/sorcery), OmniAuth, etc.
+- Your own OIDC/JWT/SSO setup
+
+Once you have a logged-in user, Eaco answers the next question: *what can this
+user see and do?*
+
+## Why Eaco? (and when not to)
+
+Eaco's peers are authorization libraries like [Pundit](https://github.com/varvet/pundit),
+[CanCanCan](https://github.com/CanCanCommunity/cancancan), and
+[Action Policy](https://github.com/palkan/action_policy). The difference is the model:
+
+| | Pundit / CanCanCan / Action Policy | **Eaco** |
+|---|---|---|
+| Authorization model | **RBAC** — rules defined in code | **ABAC** — ACLs stored as data, per record |
+| Where "who can access" lives | Ruby policy classes | The **database** (jsonb / JSON ACL on the row) |
+| Per-record, end-user-editable sharing | bolt-on / hand-rolled | **native** — `document.grant :reader, :user, 42` |
+| "List everything this user can see" | N+1 or custom scopes | **one indexed lookup** — `Document.accessible_by(user)` |
+
+**Reach for Eaco when** your permissions are *dynamic and per-record* — e.g.
+Google-Docs-style sharing ("share this document with Bob and the reviewers
+group"), team/folder collaboration, or multi-tenant SaaS with an organization
+hierarchy — and when you need to efficiently fetch the set of records a user can
+access.
+
+**Reach for Pundit / Action Policy instead when** your rules are simple and
+role-based ("admins can do everything, users can edit their own posts"). For that,
+a lightweight RBAC gem is the better fit.
+
+For very large, cross-service authorization needs you may also consider
+externalized authorization systems (Zanzibar-style services such as OpenFGA, or
+policy engines like OSO/Cedar). Eaco's trade-off versus those: it lives inside
+your existing database with no extra service to run, and stays idiomatic Ruby.
 
 ## Design
 
