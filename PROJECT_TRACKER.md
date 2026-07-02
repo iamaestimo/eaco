@@ -197,7 +197,33 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
 - [x] ~~`coveralls` replacement~~ **DONE:** now plain `SimpleCov`. Optional future:
   wire CI to upload LCOV to a coverage service (qlty/codecov) — no gem needed.
 - [ ] When to actually tag `v2.0.0.beta1` (release workflow is in place; needs the
-  rubygems.org trusted-publisher registration first).
+  rubygems.org trusted-publisher registration first). **ON HOLD pending the
+  upstream outreach below.**
+- [ ] **⚠ BLOCKING — upstream is stirring: ifad/eaco PR #24** (discovered
+  2026-07-02). An ifad member (lleirborras) opened "Support Rails 8.1 / Ruby 4"
+  on 2026-06-19 — motivation is their internal fleet upgrade (edoc, hermeshq,
+  noobs, scriptoria depend on eaco). Open, unreviewed, unmerged as of today.
+  - **Overlap with our Phase 1:** same core compat work; their railtie fix is
+    the *identical* `app.config.to_prepare` approach (independent convergence).
+  - **They have / we don't:** a single `Modern` fallback module for AR ≥ 7.0
+    instead of per-version `V70`–`V81` copies — cleaner; adopt it later
+    regardless of outcome (logged under Phase 2 cleanup below).
+  - **We have / they don't:** `rails db:create` `NoDatabaseError` fix;
+    real-Rails-8.1-app validation; clean version floor (they keep Ruby 2.7 /
+    Rails 6.1, coveralls, yard-cucumber, Cucumber ~9.2); Cucumber 11; trusted
+    publishing release automation; README repositioning; Phase 2 ABAC roadmap;
+    stated intent of long-term community maintenance.
+  - **Risk:** ifad owns the `eaco` rubygems name. If they merge + release 2.x,
+    the "rescue of an abandoned gem" launch story collapses and `eaco-abac`
+    becomes a confusing parallel fork.
+  - **Plan (decided 2026-07-02):** comment on their PR #24 — congratulate,
+    note the identical railtie fix, offer to upstream the `db:create` fix and
+    the rest, ask about release plans and co-maintainership / gem ownership.
+    **Timebox: 2 weeks** (until ~2026-07-16). Outcomes: (a) maintainership →
+    inherit the real name, retire `eaco-abac` plan; (b) they release, we
+    contribute upstream; (c) silence → launch `eaco-abac` with the honest
+    "offered upstream first" story. Draft comment prepared; posting is
+    Aestimo's call, in his voice.
 
 ## GitHub issue sync notes (apply later when we sync)
 
@@ -231,4 +257,17 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   all three gemfiles. **Phase 1 code work fully complete.**
 - **2026-07-02 (PR):** Opened PR #5 (`main` ← `phase-1-modernization`,
   https://github.com/iamaestimo/eaco/pull/5). GitHub Actions CI green on all
-  6 matrix cells (Ruby 3.2–4.0 × Rails 7.2/8.0/8.1, PG 16).
+  6 matrix cells (Ruby 3.2–4.0 × Rails 7.2/8.0/8.1, PG 16). Merged by Aestimo.
+- **2026-07-02 (rename):** Gem renamed to `eaco-abac` (PR #6,
+  https://github.com/iamaestimo/eaco/pull/6): gemspec → `eaco-abac.gemspec`,
+  homepage/badges/links → this fork, README relaunch refresh (lineage note,
+  jsonb migration, `::Model` constant requirement, `before_filter` →
+  `before_action`). Suite re-verified green. RubyGems account created;
+  pending-trusted-publisher registration deferred (reservation expires in
+  days — create it right before merge+tag).
+- **2026-07-02 (upstream):** Discovered ifad/eaco PR #24 (Rails 8.1/Ruby 4
+  support by an ifad member, opened 2026-06-19). Beta tag put ON HOLD;
+  outreach comment drafted for Aestimo to post. See the blocking item under
+  *Open decisions*. Cleanup candidate regardless of outcome: replace our
+  per-version `V70`–`V81` compat copies with their single `Modern` fallback
+  module for AR ≥ 7.0.
