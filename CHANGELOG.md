@@ -35,6 +35,15 @@ project adheres to [Semantic Versioning](https://semver.org/)
   Ruby 3.5/4.0; required by Cucumber).
 
 ### Fixed
+* Zeitwerk compatibility: the Railtie now parses `config/authorization.rb`
+  from a `to_prepare` block instead of directly in the initializer.
+  Application models cannot be autoloaded while Rails is booting on Rails 7+,
+  so any rules file referencing a model made the app fail to boot with
+  `NameError`. Rules are still re-parsed on each code reload in development.
+  Validated end-to-end inside a freshly generated Rails 8.1 app.
+* `rails db:create` no longer crashes in apps using the `:pg_jsonb` adapter:
+  the ACL schema validation is skipped when the database is unreachable or
+  does not exist yet, instead of propagating `ActiveRecord::NoDatabaseError`.
 * Ruby 3.4+ compatibility in specs: `Eaco::ACL#inspect` / `#pretty_inspect`
   expectations now track Ruby's own `Hash` formatting (spaces around `=>`).
 * Ruby 4.0 (Prism parser) compatibility: relaxed the `SyntaxError` message

@@ -73,8 +73,11 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   7.2.3 / 8.0.5 / 8.1.3 under Ruby 4.0. *Was hard-failing "Unsupported Active
   Record version: 81".*
 - [ ] Verify modern PG jsonb handling is optimal (works; revisit for GIN-index/perf in Phase 2)
-- [ ] Zeitwerk autoloader: validate inside a real Rails app boot (gem's own suite passes; railtie path not exercised by Cucumber) — *only remaining 1.1 item; needs a throwaway Rails app*
-- [x] Railtie uses `config.enable_reloading` (was deprecated `config.cache_classes`); dropped pre-7.x reloader fallback
+- [x] Zeitwerk autoloader: **validated inside a real Rails 8.1 app boot** (throwaway `rails new --minimal` app in scratchpad, eaco via `path:`). Found & fixed two real bugs:
+  - Railtie parsed rules directly in the initializer → `NameError` on any model reference under Zeitwerk (Rails 7+ forbids autoloading during boot). Now parses inside `app.config.to_prepare` (runs at boot + on each dev reload).
+  - `rails db:create` crashed: `table_exists?` raises `ActiveRecord::NoDatabaseError` on modern Rails when the DB is missing; adapter schema check now rescues & skips.
+  - Smoke test: 11/11 checks green (grant/revoke, `can?`, `accessible_by`, admin bypass, jsonb persistence, controller integration) in both lazy and eager-load boot. Note for docs/generator: rules file must use top-level constants (`::Document`) — bare `Document` resolves under `Eaco::` in the DSL.
+- [x] Railtie uses `config.enable_reloading` (was deprecated `config.cache_classes`); dropped pre-7.x reloader fallback — *superseded: now a single `to_prepare` path, no reloading branch needed*
 - [x] Remove deprecated Rails 3.x/4.x — *gemfiles + Appraisals trimmed; floor now Rails 7.2*
 
 ### 1.2 Ruby 3.x AND 4.0 compatibility  *(reworded — was "Ruby 3.x")*
@@ -216,3 +219,9 @@ framework" (which loses a head-to-head with Pundit on simple role apps).
   `cache_classes` → `enable_reloading`; `frozen_string_literal` across all 56 `lib/`
   files; added `release.yml` (RubyGems Trusted Publishing). Suite re-validated green
   on all three gemfiles. **Phase 1 complete bar the real-Rails-app Zeitwerk check.**
+- **2026-07-02 (smoke test):** Built a throwaway Rails 8.1 app and installed eaco
+  from the local checkout. Caught & fixed two real bugs: railtie must parse rules
+  in `to_prepare` (Zeitwerk forbids model autoload during boot) and the adapter's
+  `table_exists?` check must rescue `NoDatabaseError` so `rails db:create` works.
+  Smoke test 11/11 green (lazy + eager-load boot); gem suite re-validated green on
+  all three gemfiles. **Phase 1 code work fully complete.**

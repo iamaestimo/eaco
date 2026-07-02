@@ -19,12 +19,14 @@ module Eaco
     #
     # @!method parse_rules
     #
-    initializer 'eaco.parse_rules' do
+    initializer 'eaco.parse_rules' do |app|
       # :nocov:
-      Eaco.parse_default_rules_file!
-
-      if Rails.configuration.enable_reloading
-        ActiveSupport::Reloader.to_prepare { Eaco.parse_default_rules_file! }
+      # Application constants (models) cannot be autoloaded while Rails is
+      # booting: with Zeitwerk they become available only once the app is
+      # fully initialized. +to_prepare+ runs after boot and again on each
+      # code reload in development.
+      app.config.to_prepare do
+        Eaco.parse_default_rules_file!
       end
       # :nocov:
     end
